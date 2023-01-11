@@ -27,6 +27,7 @@
         <th scope="col">#</th>
         <th scope="col">name</th>
         <th scope="col">email</th>
+        <th scope="col">address</th>
       </tr>
     </thead>
     <tbody>
@@ -34,6 +35,9 @@
         <th scope="row">{{index + 1}}</th>
         <td>{{user.name}}</td>
         <td>{{user.email}}</td>
+        <td>
+          <p v-for="(address, address_index) in user.addresses">{{ address.address }}</p>
+        </td>
         <td>
           <button type="button" class="btn btn-info" @click="editUser(user)">แก้ไข</button>
         </td>
