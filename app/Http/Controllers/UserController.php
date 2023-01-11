@@ -47,10 +47,10 @@ class UserController extends Controller
             'name' => 'required',
             'password' => 'required',
             'email' => 'email|unique:users,email',
-        ], 
+        ],
         [
 
-        ] 
+        ]
         );
 
         if ($validator->fails()) {
