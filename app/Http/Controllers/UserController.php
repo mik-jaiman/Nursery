@@ -63,6 +63,11 @@ class UserController extends Controller
         $response = DB::transaction(function () use($request) {
 
             $user = User::create($request->only('name', 'password', 'email'));
+            // $user->address()->create([
+            //     'user_id' => $user->id,
+            //     'type' => '123/4',
+
+            // ]);
 
             return response()->json([
                 'message' => 'เพิ่มผู้ใช้งานสำเร็จ',
@@ -95,7 +100,7 @@ class UserController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'password' => 'required',
+            'password' => 'nullable',
             'email' => ['required', Rule::unique('users','email')->ignore($user)],
         ], 
         [
