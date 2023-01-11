@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
-use DB;
+use Illuminate\Support\Facades\DB;
+// use DB;
 
 use App\Models\User;
 
@@ -90,9 +91,35 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'password' => 'required',
+            'email' => ['required', Rule::unique('users','email')->ignore($user)],
+        ], 
+        [
+            'name.required' => 'กรุณาใส่ชื่อ'
+        ] 
+        );
+
+        if ($validator->fails()) {
+            return response()->json([
+                'messages' => $validator->errors()->all()
+            ], 400);
+        }
+
+        $response = DB::transaction(function () use($request ,$user) {
+
+             $user->update($request->only('name', 'password', 'email'));
+
+            return response()->json([
+                'message' => 'แก้ไขสำเร็จเเล้ว',
+                // 'data' => $user
+            ], 200);
+        });
+
+        return $response;
     }
 
     /**
@@ -101,8 +128,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        //
+        $user->delete();  
+        return response()->noContent();
     }
 }
