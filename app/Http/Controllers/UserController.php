@@ -99,13 +99,13 @@ class UserController extends Controller
             'email' => ['required', Rule::unique('users','email')->ignore($user)],
         ], 
         [
-
+            'name.required' => 'กรุณาใส่ชื่อ'
         ] 
         );
 
         if ($validator->fails()) {
             return response()->json([
-                'messages' => $validator->errors()
+                'messages' => $validator->errors()->all()
             ], 400);
         }
 
