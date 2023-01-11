@@ -21,7 +21,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
 
-        $users = User::orderBy('id', 'DESC');
+        $users = User::orderBy('id', 'DESC')->with('addresses');
 
         if ($request->email) {
             $users = $users->where('email', $request->email);
@@ -63,7 +63,21 @@ class UserController extends Controller
         $response = DB::transaction(function () use($request) {
 
             $user = User::create($request->only('name', 'password', 'email'));
-            $user->addresses();
+            // $user->addresses()->create([
+            //     'type' => 'ที่อยู่ตามบัตรประชาชน',
+            //     'address' => '123/4',
+            // ]);
+            $user->addresses()->createMany([
+                [
+                    'type' => 'ที่อยู่ตามบัตรประชาชน',
+                    'address' => '123/4',
+                ],
+                [
+                    'type' => 'ที่อยู่ปัจจุบัน',
+                    'address' => '88/4',
+                ]
+            ]);
+            // 'ที่อยู่ตามบัตรประชาชน', 'ที่อยู่ปัจจุบัน'
 
             return response()->json([
                 'message' => 'เพิ่มผู้ใช้งานสำเร็จ',
