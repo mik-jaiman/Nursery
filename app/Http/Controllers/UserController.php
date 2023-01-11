@@ -91,9 +91,35 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'password' => 'required',
+            'email' => ['required', Rule::unique('users','email')->ignore($user)],
+        ], 
+        [
+
+        ] 
+        );
+
+        if ($validator->fails()) {
+            return response()->json([
+                'messages' => $validator->errors()
+            ], 400);
+        }
+
+        $response = DB::transaction(function () use($request ,$user) {
+
+             $user->update($request->only('name', 'password', 'email'));
+
+            return response()->json([
+                'message' => 'แก้ไขสำเร็จเเล้ว',
+                // 'data' => $user
+            ], 200);
+        });
+
+        return $response;
     }
 
     /**
