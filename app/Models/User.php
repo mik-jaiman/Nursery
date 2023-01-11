@@ -49,8 +49,8 @@ class User extends Authenticatable
       $this->attributes['password'] = Hash::make($password);
     }
 
-    public function addresses(){
-        return ;
+    public function addresses()
+    {
+        return $this->hasMany(Address::class);
     }
-
 }
