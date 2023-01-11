@@ -5,13 +5,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Bootstrap demo</title>
+  <title>MIK</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
 </head>
 
 <div id="app">
   {{ message }}
-  <table class="table">
+  <form @submit.prevent="addUser">
+    <input type="text" class="my-1 form-control" placeholder="ชื่อ" v-model="data.name" required>
+    <input type="email" class="my-1 form-control" placeholder="อีเมล" v-model="data.email" required>
+    <input type="password" class="my-1 form-control" placeholder="รหัสผ่าน" v-model="data.password" required>
+
+    <button type="submit" class="btn btn-primary">บันทึก</button>
+  </form>
+
+  <div v-if="isLoading">Loading</div>
+  
+  <table v-else class="table">
     <thead>
       <tr>
         <th scope="col">#</th>
@@ -21,12 +31,30 @@
     </thead>
     <tbody>
       <tr v-for="(user, index) in users">
-        <th scope="row">1</th>
-        <td>Mark</td>
-        <td>Otto</td>
+        <th scope="row">{{index + 1}}</th>
+        <td>{{user.name}}</td>
+        <td>{{user.email}}</td>
+        <td>
+          <button type="button" class="btn btn-info" @click="editUser(user)">แก้ไข</button>
+        </td>
+        <td>
+          <button type="button" class="btn btn-danger" @click="deleteUser(user.id)">ลบ</button>
+        </td>
       </tr>
     </tbody>
   </table>
+
+  <form v-if="edit.id" @submit.prevent="updateUser">
+    <input type="text" class="my-1 form-control" placeholder="ชื่อ" v-model="edit.name" required>
+    <input type="email" class="my-1 form-control" placeholder="อีเมล" v-model="edit.email" required>
+    <input type="password" class="my-1 form-control" placeholder="รหัสผ่าน" v-model="edit.password">
+
+    <button type="submit" class="btn btn-primary">แก้ไข</button>
+  </form>
+
+  <p v-if="toggle">ข้อความลับ</p>
+  <button type="button" @click="toggle = !toggle">{{ !toggle ? 'เปิด' : 'ปิด'}}</button>
+  
 </div>
 
 <script>
@@ -36,7 +64,20 @@
     data() {
       return {
         message: 'Hello Vue!',
-        users: []
+        users: [],
+        toggle: false,
+        data: {
+          name: null,
+          email: null,
+          password: null
+        },
+        edit: {
+          id: null,
+          name: null,
+          email: null,
+          password: null
+        },
+        isLoading: true
       }
     },
     created(){
@@ -45,11 +86,44 @@
     },
     methods:{
       getUser(){
+        this.isLoading = true
         console.log('getUser')
         axios.get('http://127.0.0.1:8000/api/users').then((reponse) => {
           
           this.users = reponse.data
           console.log('users', this.users)
+          this.isLoading = false
+        });
+      },
+      addUser(){
+        axios.post('http://127.0.0.1:8000/api/users', this.data).then((reponse) => {
+          console.log('addUser', reponse)
+          this.getUser()
+        });
+      },
+      editUser(user){
+        this.edit = {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          password: null
+        }
+      },
+      updateUser(){
+        axios.put('http://127.0.0.1:8000/api/users/' + this.edit.id, this.edit).then((reponse) => {
+          this.getUser()
+          this.edit = {
+            id: null,
+            name: null,
+            email: null,
+            password: null
+          }
+        });
+      },
+      deleteUser(id){
+        console.log('deleteUser', id)
+        axios.delete('http://127.0.0.1:8000/api/users/' + id).then((reponse) => {
+          this.getUser()
         });
       }
     }
