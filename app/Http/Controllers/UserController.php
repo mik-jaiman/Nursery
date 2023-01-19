@@ -115,7 +115,7 @@ class UserController extends Controller
         ], 
         [
             'name.required' => 'กรุณาใส่ชื่อ'
-        ] 
+        ]
         );
 
         if ($validator->fails()) {
@@ -145,7 +145,8 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        $user->delete();  
+        $user->delete();
+
         return response()->noContent();
     }
 }
