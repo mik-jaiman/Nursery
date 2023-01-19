@@ -21,7 +21,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
 
-        $users = User::orderBy('id', 'DESC')->with('addresses');
+        $users = User::orderBy('id', 'DESC')->with('addresses', 'branch.department');
 
         if ($request->email) {
             $users = $users->where('email', $request->email);

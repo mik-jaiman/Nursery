@@ -20,6 +20,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'branch_id',
         'name',
         'email',
         'password',
@@ -52,5 +53,10 @@ class User extends Authenticatable
     public function addresses()
     {
         return $this->hasMany(Address::class);
+    }
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class);
     }
 }

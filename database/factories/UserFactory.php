@@ -18,6 +18,7 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
+            'branch_id' => rand(1,2),
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),

@@ -22,5 +22,9 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         // php artisan migrate:fresh  --seed
+
+        $this->call([
+            DepartmentSeeder::class,
+        ]);
     }
 }
