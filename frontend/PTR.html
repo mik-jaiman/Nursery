@@ -22,6 +22,8 @@
                 <th scope="col">#</th>
                 <th scope="col">name</th>
                 <th scope="col">email</th>
+                <th scope="col">branch</th>
+                <th scope="col">department</th>
             </tr>
         </thead>
         <tbody>
@@ -29,6 +31,8 @@
                 <th scope="row">{{index + 1}}</th>
                 <td>{{user.name}}</td>
                 <td>{{user.email}}</td>
+                <td>{{user.branch.name}}</td>
+                <td>{{user.branch.department.name}}</td>
                 <td>
                     <button type="button" class="btn btn-warning" @click="editUser(user)">แก้ไข</button>
                     <button type="button" class="btn btn-danger" @click="deleteUser(user.id)">ลบ</button>
